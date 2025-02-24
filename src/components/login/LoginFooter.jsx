@@ -25,12 +25,12 @@ export default function LoginFooter() {
         <Link to="/">Sign Up</Link>
         <Link to="/">Log in</Link>
         <Link to="/">Messenger</Link>
-        <Link to="/">Backbook Lite</Link>
+        <Link to="/">Bantah Lite</Link>
         <Link to="/">Watch</Link>
         <Link to="/">Places</Link>
         <Link to="/">Games</Link>
         <Link to="/">Marketplace</Link>
-        <Link to="/">Backbook Pay</Link>
+        <Link to="/">Bantah Pay</Link>
         <Link to="/">Oculus</Link>
         <Link to="/">Portal</Link>
         <Link to="/">Instagram</Link>
@@ -56,7 +56,7 @@ export default function LoginFooter() {
       </div>
       <div className={styles.warp}>
         <Link to="/" style={{ fontSize: "12px", marginTop: "10px" }}>
-          Backbook © 2022
+          Bantah © 2025
         </Link>
       </div>
     </footer>

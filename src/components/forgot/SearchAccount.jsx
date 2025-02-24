@@ -7,6 +7,7 @@ import LoginInput from "../input/login";
 import FormLoader from "../FormLoader";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from '../../config/api';
 
 const initialforgotInfos = {
   email: "",
@@ -34,12 +35,10 @@ function SearchAccount({ setVisible, setUserInfos }) {
     try {
       setLoading(true);
       const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/forgotPassword`,
+        `${API_BASE_URL}/users/forgotPassword`,
         {
           params: { email: values.email },
-        },
-        {
-          withCredentials: true,
+          withCredentials: true
         }
       );
       setUserInfos(data.data);
@@ -48,10 +47,7 @@ function SearchAccount({ setVisible, setUserInfos }) {
       setLoading(false);
     } catch (error) {
       setError(error.response?.data?.message);
-      setTimeout(() => {
-        setForgotInfo(initialforgotInfos);
-        setLoading(false);
-      }, 1000);
+      setLoading(false);
     }
   };
 

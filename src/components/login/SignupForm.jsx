@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../UI/Card/Card";
 import FormLoader from "../FormLoader";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
+import { API_BASE_URL } from '../../config';
 
 function SignupForm({ setRenderSignUp, renderSignUp }) {
   const dispatch = useDispatch();
@@ -91,7 +92,7 @@ function SignupForm({ setRenderSignUp, renderSignUp }) {
     try {
       setLoading(true);
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/signup`,
+        `${API_BASE_URL}/users/signup`,
         {
           first_name: values.first_name,
           last_name: values.last_name,
@@ -117,7 +118,7 @@ function SignupForm({ setRenderSignUp, renderSignUp }) {
     } catch (error) {
       setLoading(false);
       setSuccess("");
-      setError(error.response.data.message);
+      setError(error.response?.data?.message);
     }
   };
 

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../../app/slices/userSlice";
 import Card from "../UI/Card/Card";
 import FormLoader from "../FormLoader";
+import { API_BASE_URL } from '../../config';
 
 const initialloginInfos = {
   email: "",
@@ -35,34 +36,50 @@ function LoginForm({ setRenderSignUp }) {
   const submitHandler = async (values) => {
     try {
       setLoading(true);
+      setError(""); // Clear previous errors
+      
+      console.log('Attempting login with:', values.email);
+      
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/login`,
+        `${API_BASE_URL}/users/login`,
         {
           email: values.email,
           password: values.password,
         },
         {
           withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
         }
       );
-      setError("");
-      setSuccess(data.status);
-      dispatch(login(data));
-      setLoading(false);
+
+      if (data.status === 'success') {
+        setSuccess('Login successful');
+        dispatch(login(data));
+      } else {
+        setError(data.message || 'Login failed');
+      }
     } catch (error) {
-      setSuccess("");
-      setError(error.response?.data?.message);
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      console.error('Login error details:', error.response?.data || error);
+      setError(error.response?.data?.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleGuestLogin = () => {
+    submitHandler({
+      email: "admin@backbook.com",
+      password: "Admin123!@#"
+    });
   };
   return (
     <main className={styles.main}>
       <div className={styles.header}>
         <img src="../../icons/backbook.svg" alt="" />
         <span>
-          Backbook helps you connect and share with the people in your life.
+          Bantah with love! h
         </span>
       </div>
       <div className={styles.login}>
@@ -105,12 +122,7 @@ function LoginForm({ setRenderSignUp }) {
                   className="gray_btn"
                   type="button"
                   disabled={loading}
-                  onClick={() => {
-                    submitHandler({
-                      email: "guest@backbook.io",
-                      password: "V0j^Lok?DYdv63rzSQxL6IK?mG2vX]v",
-                    });
-                  }}
+                  onClick={handleGuestLogin}
                 >
                   Login With Guest Account
                 </button>
