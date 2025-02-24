@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Router from "./routes/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import CreatePostPopup from "./components/posts/CreatePostPopup";
 import { useSelector } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import Portal from "./utils/Portal";
+import CreateEvent from "./components/home/events/CreateEvent";
+import SplashScreen from "./components/SplashScreen/SplashScreen.tsx";
+
 
 export const queryClient = new QueryClient();
 
 function App() {
+  const [showSplash, setShowSplash] = useState(true);
   const user = useSelector((state) => ({ ...state.user.userinfo }));
   const theme = useSelector((state) => state.user.theme);
   const createPost = useSelector((state) => state.createPost);
@@ -27,21 +31,17 @@ function App() {
     }
   }, [theme]);
 
-  useEffect(() => {
-    if (createPost.isOpen) {
-      document.documentElement.style.overflow = "hidden";
-    } else {
-      document.documentElement.style.overflow = "auto";
-    }
-  }, [createPost.isOpen]);
-
   return (
     <QueryClientProvider client={queryClient}>
-      {createPost.isOpen && <CreatePostPopup user={user} />}
-      <Portal>
-        <Toaster position="bottom-left" reverseOrder={false} />
-      </Portal>
-      <Router />
+      {showSplash ? (
+        <SplashScreen onComplete={() => setShowSplash(false)} />
+      ) : (
+        <>
+          <Toaster position="top-center" reverseOrder={false} />
+          <Router />
+          {createPost && <Portal />}
+        </>
+      )}
     </QueryClientProvider>
   );
 }

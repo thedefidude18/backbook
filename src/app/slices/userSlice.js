@@ -2,19 +2,36 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const initialValue = {
-  userinfo: Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null,
-  theme: Cookies.get("theme")
-    ? JSON.parse(Cookies.get("theme"))
-    : window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light",
-  fcm: Cookies.get("fcm") ? JSON.parse(Cookies.get("fcm")) : null,
+const initialState = {
+  userinfo: (() => {
+    try {
+      const userCookie = Cookies.get("user");
+      return userCookie ? JSON.parse(userCookie) : null;
+    } catch {
+      return null;
+    }
+  })(),
+  theme: (() => {
+    try {
+      const themeCookie = Cookies.get("theme");
+      return themeCookie ? JSON.parse(themeCookie) : 
+        (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    } catch {
+      return "light";
+    }
+  })(),
+  fcm: (() => {
+    try {
+      const fcmCookie = Cookies.get("fcm");
+      return fcmCookie ? JSON.parse(fcmCookie) : null;
+    } catch {
+      return null;
+    }
+  })(),
 };
 export const userSlice = createSlice({
   name: "user",
-  initialState: initialValue,
+  initialState,
 
   reducers: {
     login: (state, action) => {

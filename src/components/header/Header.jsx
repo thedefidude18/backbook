@@ -12,14 +12,12 @@ import {
   HomeActive,
   Logo,
   Market,
-  Menu,
   Messenger,
   Notifications,
   Search,
   Watch,
 } from "../../svg";
 import SearchMenu from "./SearchMenu";
-import AllMenu from "./AllMenu";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
 import UserMenu from "./userMenu/index";
 import NotificationMenu from "./notificationMenu/NotificationMenu";
@@ -28,17 +26,11 @@ function Header() {
   const input = useRef();
   const [showIcon, setShowIcon] = useState(true);
   const [showSearchMenu, setShowSearchMenu] = useState(false);
-  const [showAllMenu, setShowAllMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotificationMenu, setShowNotificationMenu] = useState(false);
-  const allmenu = useRef(null);
   const usermenu = useRef(null);
   const notificationmenu = useRef(null);
   const location = useLocation();
-
-  useOnClickOutside(allmenu, showAllMenu, () => {
-    setShowAllMenu(false);
-  });
 
   useOnClickOutside(usermenu, showUserMenu, () => {
     setShowUserMenu(false);
@@ -54,7 +46,12 @@ function Header() {
       <div className={styles.left}>
         <Link to="/" className={styles.logo}>
           <div className={styles.circle}>
-            <Logo width={200} />
+            <img 
+              src="/icons/bantahblue.svg" 
+              alt="Bantah Logo"
+              width="40"
+              height="40"
+            />
           </div>
         </Link>
         <div
@@ -158,22 +155,6 @@ function Header() {
           <img src={user?.photo} alt={user?.username} className="shadow" />
           <span>{user?.first_name}</span>
         </NavLink>
-        <div ref={allmenu}>
-          <div
-            className={`${styles.circle_icon}  ${
-              showAllMenu && styles.active_header
-            }`}
-            onClick={() => {
-              setShowAllMenu((prev) => !prev);
-            }}
-          >
-            <div style={{ transform: "translateY(2px)" }}>
-              <Menu />
-            </div>
-          </div>
-
-          {showAllMenu && <AllMenu />}
-        </div>
         <NavLink
           to="/messages"
           className={({ isActive }) =>

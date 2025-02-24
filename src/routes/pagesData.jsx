@@ -1,4 +1,5 @@
 import React from "react";
+import CreateEvent from "../components/home/events/CreateEvent";
 
 const Home = React.lazy(() => import("../pages/home"));
 const Login = React.lazy(() => import("../pages/login"));
@@ -74,6 +75,12 @@ const pagesData = [
     element: <Login />,
     title: "login",
     priv: false,
+  },
+  {
+    path: "create-event",
+    element: <CreateEvent />,
+    title: "Create Event",
+    priv: true,
   },
 ];
 
