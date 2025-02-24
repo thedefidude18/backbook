@@ -31,19 +31,21 @@ function Home() {
   const { mutate } = useAddFCM();
 
   async function requestPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BJSPwo1aXb5un4sORg-jEcznSFs7QmuIhoFTNT6Se8Zje-r69aH5xxJAlFqDM9Y5SA3QJ5-1xiGfYOkADCT4dZs",
-      });
-      if (fcm !== token) {
-        mutate({ fcm: token });
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const token = await getToken(messaging, {
+          vapidKey: "BJSPwo1aXb5un4sORg-jEcznSFs7QmuIhoFTNT6Se8Zje-r69aH5xxJAlFqDM9Y5SA3QJ5-1xiGfYOkADCT4dZs"
+        });
+        
+        if (fcm !== token) {
+          mutate({ fcm: token });
+        }
+      } else if (permission === "denied") {
+        console.log("Notification permission denied");
       }
-    } else if (permission === "denied") {
-      alert(
-        "You denied for the notification access, please allow it to be able to recieve notifications"
-      );
+    } catch (error) {
+      console.error("Error requesting notification permission:", error);
     }
   }
 
@@ -90,20 +92,25 @@ function Home() {
   } = useQuery({
     queryKey: ["ping"],
     queryFn: async () => {
-      const { data } = await axios.put(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/ping`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      return data;
+      try {
+        const { data } = await axios.put(
+          `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/ping`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        return data;
+      } catch (error) {
+        // Silently handle ping failures
+        console.warn("Ping failed:", error.message);
+        return null;
+      }
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     enabled: false,
     retry: false,
-    cacheTime: 0,
   });
 
   const postsSkeleton = isFetching || isLoading;

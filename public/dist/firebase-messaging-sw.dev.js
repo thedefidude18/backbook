@@ -1,8 +1,10 @@
+"use strict";
+
 importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
 /* global importScripts */
-importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js");
 
-const firebaseConfig = {
+importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js");
+var firebaseConfig = {
   apiKey: "AIzaSyCwFYUjj46OhyLj-3_h9TpdknGe0aCZjx0",
   projectId: "bantahchat",
   messagingSenderId: "1016928888312",
@@ -13,19 +15,19 @@ try {
   if (!firebase) {
     throw new Error('Firebase SDK not found');
   }
+
   firebase.initializeApp(firebaseConfig);
 } catch (error) {
   console.error('Firebase initialization error:', error);
 }
-const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage((payload) => {
+var messaging = firebase.messaging();
+messaging.onBackgroundMessage(function (payload) {
   console.log("[firebase-messaging-sw.js] Received background message ", payload);
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
+  var notificationTitle = payload.notification.title;
+  var notificationOptions = {
     body: payload.notification.body,
-    icon: payload.notification.image,
+    icon: payload.notification.image
   };
-
   registration.showNotification(notificationTitle, notificationOptions);
 });
