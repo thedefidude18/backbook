@@ -1,0 +1,174 @@
+.wallet_button {
+  background-color: #CCFF00;
+  color: #000000;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+}
+
+.wallet_button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.wallet_container {
+  min-height: 100vh;
+  background-color: #EDEDED;
+  padding-bottom: 72px;
+}
+
+.wallet_header {
+  background-color: #EDEDED;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.back_button {
+  position: absolute;
+  left: 16px;
+  padding: 8px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.back_button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.back_icon {
+  height: 24px;
+  width: 24px;
+}
+
+.wallet_content {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.wallet_card {
+  background: #1e1e2e;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.balance_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.balance_label {
+  color: #9ca3af;
+}
+
+.balance_amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.wallet_icons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.icon_container {
+  background: #333;
+  padding: 0.5rem;
+  border-radius: 9999px;
+}
+
+.wallet_icon {
+  font-size: 1rem;
+  color: #CCFF00;
+}
+
+.quick_actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.action_button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: #333;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.action_button:hover {
+  background: #444;
+}
+
+.action_icon {
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.deposit_form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input_label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.input_container {
+  position: relative;
+}
+
+.input_icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.amount_input {
+  width: 100%;
+  background: #333;
+  color: white;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.amount_input:focus {
+  box-shadow: 0 0 0 2px #CCFF00;
+}
+
+.conversion_text {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}

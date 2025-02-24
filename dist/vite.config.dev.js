@@ -14,10 +14,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var _default = (0, _vite.defineConfig)({
   plugins: [(0, _pluginReact["default"])()],
   server: {
-    middlewareMode: 'html',
-    headers: {
-      'Content-Type': 'application/javascript'
-    }
+    port: 3001,
+    // Specify a different port
+    open: true,
+    // Automatically open browser
+    host: true,
+    // Listen on all local IPs
+    strictPort: false // Try next available port if 3001 is taken
+
   },
   build: {
     rollupOptions: {

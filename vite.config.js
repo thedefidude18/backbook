@@ -4,10 +4,10 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    middlewareMode: 'html',
-    headers: {
-      'Content-Type': 'application/javascript',
-    },
+    port: 3001, // Specify a different port
+    open: true, // Automatically open browser
+    host: true, // Listen on all local IPs
+    strictPort: false, // Try next available port if 3001 is taken
   },
   build: {
     rollupOptions: {

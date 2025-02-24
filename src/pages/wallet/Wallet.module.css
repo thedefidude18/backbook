@@ -1,0 +1,45 @@
+.wallet_container {
+  min-height: 100vh;
+  background-color: #EDEDED;
+  padding-bottom: 72px;
+}
+
+.wallet_header {
+  background-color: #EDEDED;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.back_button {
+  position: absolute;
+  left: 16px;
+  padding: 8px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.back_button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.back_icon {
+  height: 24px;
+  width: 24px;
+}
+
+.header_title {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.wallet_content {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 16px;
+}

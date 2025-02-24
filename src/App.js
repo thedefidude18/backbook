@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 import Portal from "./utils/Portal";
 import CreateEvent from "./components/home/events/CreateEvent";
 import SplashScreen from "./components/SplashScreen/SplashScreen.tsx";
-
+import MobileFooterNav from "./components/mobileNav/MobileFooterNav";
 
 export const queryClient = new QueryClient();
 
@@ -16,20 +16,7 @@ function App() {
   const user = useSelector((state) => ({ ...state.user.userinfo }));
   const theme = useSelector((state) => state.user.theme);
   const createPost = useSelector((state) => state.createPost);
-
-  window.oncontextmenu = function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
-  };
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }, [theme]);
+  const isCreatePostOpen = useSelector((state) => state.createPost.isOpen);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -37,9 +24,10 @@ function App() {
         <SplashScreen onComplete={() => setShowSplash(false)} />
       ) : (
         <>
-          <Toaster position="top-center" reverseOrder={false} />
           <Router />
-          {createPost && <Portal />}
+          <MobileFooterNav user={user} />
+          <Toaster position="top-center" />
+          {isCreatePostOpen && <CreatePostPopup user={user} />}
         </>
       )}
     </QueryClientProvider>

@@ -24,6 +24,9 @@ import Comments from "./comments/Comments";
 import PostLikes from "./likes/PostLikes";
 import SharedPost from "./shares/SharedPost";
 import ShareMenu from "./shares/ShareMenu";
+import { Lock, Users, Clock, Trophy } from 'lucide-react';
+
+const DEFAULT_BANNER = '/images/default-banner.png'; // Adjust the path as needed
 
 const getSortedReacts = (list) => {
   const reacts = Object.keys(
@@ -159,6 +162,44 @@ function Post({ post }) {
   const commentCountHandler = (count) => {
     setCommentsCount(count);
   };
+
+  const renderEventContent = () => {
+    if (post.type !== 'event') return null;
+    
+    return (
+      <div className="bg-[#242538] rounded-xl overflow-hidden shadow-lg text-white">
+        <div className="relative">
+          <img
+            src={post.banner_url || DEFAULT_BANNER}
+            alt={post.title}
+            className="w-full h-48 object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+          
+          {post.isActive && (
+            <span className="absolute top-2 left-2 bg-[#CCFF00] text-black px-3 py-1 rounded-full text-sm">
+              LIVE
+            </span>
+          )}
+
+          <span className="absolute top-2 right-2 bg-[#7C3AED]/80 text-white px-3 py-1 rounded-full text-sm">
+            {post.category}
+          </span>
+
+          <div className="absolute bottom-4 left-4 right-4">
+            <h3 className="text-white font-semibold text-lg">{post.title}</h3>
+            <div className="flex items-center gap-2 mt-2">
+              <span className="bg-[#1a1b2e] text-white px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                <Users size={14} />
+                {post.participants?.length || 0}/{post.max_participants || 'unlimited'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <Card className={classes.post} innerRef={postRef}>
       <div className={classes.header}>
@@ -223,111 +264,115 @@ function Post({ post }) {
           )}
         </div>
       </div>
-      <div className={classes.body}>
-        {post.type === "background" && (
-          <div
-            className={classes.background}
-            style={{
-              backgroundImage: `url(${postBackgrounds[post.background - 1]})`,
-              direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
-            }}
-          >
-            {post.text}
-          </div>
-        )}
-        {post.type === "normal" && (
-          <div
-            className={classes.normal}
-            style={{
-              fontSize: `${post.text.length > 75 ? "15px" : ""}`,
-              direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
-            }}
-          >
-            {post.text}
-          </div>
-        )}
-        {post.type === "image" && (
+      <div className={classes.post_content}>
+        {post.type === 'event' ? renderEventContent() : (
           <>
-            <div
-              style={{
-                direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
-              }}
-              className={classes.normal}
-            >
-              {post.text}
-            </div>
-            <div
-              className={`${classes.images_wrap} ${
-                imgNum === 2
-                  ? classes.per2
-                  : imgNum === 3
-                  ? classes.per3
-                  : imgNum === 4
-                  ? classes.per4
-                  : imgNum === 5
-                  ? classes.per5
-                  : classes.per1
-              }`}
-            >
-              {post.images.map((img, i) => (
-                <img
-                  onClick={() => openImageViewer(i)}
-                  src={img}
-                  alt={i}
-                  key={i}
-                />
-              ))}
-            </div>
-          </>
-        )}
-        {post.type === "profilePhoto" && (
-          <>
-            <div
-              className={classes.normal}
-              style={{
-                direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
-              }}
-            >
-              {post.text}
-            </div>
-            <div className={`${classes.profilePhoto_wrap} `}>
+            {post.type === "background" && (
               <div
-                className={classes.cover}
-                style={{ backgroundImage: `url(${post.user.cover})` }}
-              ></div>
-              <img
-                onClick={() => openImageViewer(0)}
-                src={post.images[0]}
-                alt={post.text}
-              />
-            </div>
-          </>
-        )}
-        {post.type === "cover" && (
-          <>
-            <div className={`${classes.images_wrap} `}>
-              <img
-                onClick={() => openImageViewer(0)}
-                src={post.images[0]}
-                alt={post.text}
-              />
-            </div>
-          </>
-        )}
-        {post.type === "share" && (
-          <>
-            <div
-              className={classes.normal}
-              style={{
-                fontSize: `${String(post.text).length > 20 ? "15px" : ""}`,
-                direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
-              }}
-            >
-              {post.text}
-            </div>
-            <div className={classes.share}>
-              <SharedPost post={post?.sharedID} />
-            </div>
+                className={classes.background}
+                style={{
+                  backgroundImage: `url(${postBackgrounds[post.background - 1]})`,
+                  direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
+                }}
+              >
+                {post.text}
+              </div>
+            )}
+            {post.type === "normal" && (
+              <div
+                className={classes.normal}
+                style={{
+                  fontSize: `${post.text.length > 75 ? "15px" : ""}`,
+                  direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
+                }}
+              >
+                {post.text}
+              </div>
+            )}
+            {post.type === "image" && (
+              <>
+                <div
+                  style={{
+                    direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
+                  }}
+                  className={classes.normal}
+                >
+                  {post.text}
+                </div>
+                <div
+                  className={`${classes.images_wrap} ${
+                    imgNum === 2
+                      ? classes.per2
+                      : imgNum === 3
+                      ? classes.per3
+                      : imgNum === 4
+                      ? classes.per4
+                      : imgNum === 5
+                      ? classes.per5
+                      : classes.per1
+                  }`}
+                >
+                  {post.images.map((img, i) => (
+                    <img
+                      onClick={() => openImageViewer(i)}
+                      src={img}
+                      alt={i}
+                      key={i}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            {post.type === "profilePhoto" && (
+              <>
+                <div
+                  className={classes.normal}
+                  style={{
+                    direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
+                  }}
+                >
+                  {post.text}
+                </div>
+                <div className={`${classes.profilePhoto_wrap} `}>
+                  <div
+                    className={classes.cover}
+                    style={{ backgroundImage: `url(${post.user.cover})` }}
+                  ></div>
+                  <img
+                    onClick={() => openImageViewer(0)}
+                    src={post.images[0]}
+                    alt={post.text}
+                  />
+                </div>
+              </>
+            )}
+            {post.type === "cover" && (
+              <>
+                <div className={`${classes.images_wrap} `}>
+                  <img
+                    onClick={() => openImageViewer(0)}
+                    src={post.images[0]}
+                    alt={post.text}
+                  />
+                </div>
+              </>
+            )}
+            {post.type === "share" && (
+              <>
+                <div
+                  className={classes.normal}
+                  style={{
+                    fontSize: `${String(post.text).length > 20 ? "15px" : ""}`,
+                    direction: `${isRTL(post.text) ? "rtl" : "ltr"}`,
+                  }}
+                >
+                  {post.text}
+                </div>
+                <div className={classes.share}>
+                  <SharedPost post={post?.sharedID} />
+                </div>
+              </>
+            )}
           </>
         )}
       </div>

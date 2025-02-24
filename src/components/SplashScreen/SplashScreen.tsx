@@ -15,7 +15,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
     // Complete animation and call onComplete after fade out
     const completeTimer = setTimeout(() => {
-      onComplete();
+      if (onComplete) {
+        onComplete();
+      }
     }, 2500);
 
     return () => {

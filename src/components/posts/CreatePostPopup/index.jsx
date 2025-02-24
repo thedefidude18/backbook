@@ -17,26 +17,67 @@ import { useCreatePost } from "../../../hooks/useCreatePost";
 
 function CreatePostPopup({ user }) {
   const dispatch = useDispatch();
-
   const [picker, setPicker] = useState(false);
   const createPost = useSelector((state) => state.createPost);
+  
+  // Move all hooks to the top
+  const popup = useRef(null);
+  const textRef = useRef(null);
+  const imgInput = useRef(null);
+  const postTextRef = useRef(null);
+  const bgRef = useRef(null);
+  const popUpRef = useRef(null);
+
+  // Only call useCreatePost if we have a username
+  const createPostMutation = useCreatePost(user?.username);
+  const { 
+    data: postData, 
+    isLoading: isPostLoading, 
+    isSuccess: isPostSuccess, 
+    error: postError, 
+    mutate: mutatePost 
+  } = createPostMutation;
+
+  useEffect(() => {
+    if (textRef.current) {
+      textRef.current.focus();
+    }
+  }, []);
+
+  useOnClickOutside(popup, createPost.open, () => {
+    dispatch({
+      type: "CLOSE_CREATE_POST",
+    });
+  });
+
+  useEffect(() => {
+    if (isPostSuccess) {
+      dispatch({
+        type: "CLOSE_CREATE_POST",
+      });
+    }
+  }, [isPostSuccess, dispatch]);
+
+  // Early return if no user
+  if (!user) {
+    return null;
+  }
+
   const postText = createPost.postText;
   const postImage = createPost.type === "image";
   const postNormal = createPost.type === "normal";
   const postBackground = createPost.type === "background";
-  const postTextRef = useRef();
-  const bgRef = useRef();
-  const popUpRef = useRef(null);
+
   const setPostText = (txt) => {
     dispatch(createPostSlice.postText(txt.replace(/(^[ \t]*\n)/gm, "")));
   };
 
   useEffect(() => {
-    if (postBackground) {
+    if (postBackground && bgRef.current) {
       bgRef.current.style.backgroundImage = `url(${
         postBackgrounds[createPost.background - 1]
       })`;
-    } else {
+    } else if (bgRef.current) {
       bgRef.current.style.backgroundImage = null;
     }
   }, [postBackground, createPost.background]);
@@ -45,24 +86,15 @@ function CreatePostPopup({ user }) {
     dispatch(createPostSlice.open());
   });
 
-  const { data, isLoading, isSuccess, error, mutate } = useCreatePost(
-    user.username
-  );
-
-  useEffect(() => {
-    if (isSuccess && data?.data?.status === "success") {
-      setTimeout(() => {
-        dispatch(createPostSlice.success());
-      }, 300);
-    }
-  }, [data, isSuccess]);
-
   const postSubmit = () => {
+    if (!user?.username) return;
+
     let form = new FormData();
     form.append("type", createPost.type);
     form.append("text", createPost.postText);
-    if (createPost.type === "background")
+    if (createPost.type === "background") {
       form.append("background", createPost.background);
+    }
 
     if (createPost.type === "image") {
       const postImages = createPost.images.map((img) => {
@@ -72,10 +104,11 @@ function CreatePostPopup({ user }) {
         form.append("images", image);
       });
     }
+
     if (createPost.type === "image") {
-      mutate({ data: form, type: "image" });
+      mutatePost({ data: form, type: "image" });
     } else {
-      mutate({ data: Object.fromEntries(form), type: createPost.type });
+      mutatePost({ data: Object.fromEntries(form), type: createPost.type });
     }
   };
 
@@ -83,7 +116,7 @@ function CreatePostPopup({ user }) {
     <Portal>
       <div className={`${classes.wrap} blur`}>
         <Card className={classes.card} innerRef={popUpRef}>
-          <FormLoader loading={isLoading} isError={error}>
+          <FormLoader loading={isPostLoading} isError={postError}>
             <div className={classes.header}>
               <span>Create post</span>
               <div className={`${classes.exit} small_circle`}>
@@ -161,7 +194,7 @@ function CreatePostPopup({ user }) {
               <div className={classes.cfooter}>
                 <AddToYourPost />
                 <button
-                  disabled={isLoading}
+                  disabled={isPostLoading}
                   className="btn_blue"
                   onClick={() => {
                     postSubmit();

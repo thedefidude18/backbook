@@ -8,6 +8,7 @@ const Profile = React.lazy(() => import("../pages/profile"));
 const FriendsPage = React.lazy(() => import("../pages/friends"));
 const PostPage = React.lazy(() => import("../pages/post/PostPage"));
 const Messages = React.lazy(() => import("../pages/messages"));
+const Wallet = React.lazy(() => import("../pages/wallet"));
 
 const pagesData = [
   {
@@ -80,6 +81,12 @@ const pagesData = [
     path: "create-event",
     element: <CreateEvent />,
     title: "Create Event",
+    priv: true,
+  },
+  {
+    path: "wallet",
+    element: <Wallet />,
+    title: "wallet",
     priv: true,
   },
 ];

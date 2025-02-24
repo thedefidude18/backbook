@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import styles from './CreateEvent.module.css';
 import Card from "../../UI/Card/Card";
 import { Search } from '../../../svg';
+import { useEventCreation, validateEventData } from '../../../hooks/useEventCreation';
+import { toast } from 'react-hot-toast';
 
 function CreateEvent() {
   const navigate = useNavigate();
+  const { mutate: createEvent, isLoading } = useEventCreation();
   const [activeTab, setActiveTab] = useState('public');
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
@@ -25,7 +28,11 @@ function CreateEvent() {
     time: '',
     location: '',
     description: '',
-    category: 'social'
+    category: 'social',
+    maxParticipants: '2',
+    rules: '',
+    bannerImage: null,
+    termsAccepted: false
   });
 
   const [privateFormData, setPrivateFormData] = useState({
@@ -38,9 +45,48 @@ function CreateEvent() {
     maxAttendees: ''
   });
 
-  const handleChallengeSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Challenge:', challengeFormData);
+    
+    let eventData;
+    switch (activeTab) {
+      case 'public':
+        eventData = publicFormData;
+        break;
+      case 'private':
+        eventData = privateFormData;
+        break;
+      case 'challenge':
+        eventData = challengeFormData;
+        break;
+    }
+
+    // Validate the data
+    const { isValid, errors } = validateEventData(eventData, activeTab);
+    
+    if (!isValid) {
+      // Show first error
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError);
+      return;
+    }
+
+    try {
+      await createEvent(
+        { eventData, type: activeTab },
+        {
+          onSuccess: () => {
+            toast.success('Event created successfully!');
+            navigate('/events');
+          },
+          onError: (error) => {
+            toast.error(error.response?.data?.message || 'Failed to create event');
+          }
+        }
+      );
+    } catch (error) {
+      toast.error('Failed to create event');
+    }
   };
 
   const handleChallengeChange = (e) => {
@@ -55,21 +101,15 @@ function CreateEvent() {
     // TODO: Implement user search functionality
   };
 
-  const handlePublicSubmit = (e) => {
-    e.preventDefault();
-    console.log('Public Event:', publicFormData);
-  };
-
-  const handlePrivateSubmit = (e) => {
-    e.preventDefault();
-    console.log('Private Event:', privateFormData);
-  };
-
   const handlePublicChange = (e) => {
-    setPublicFormData({
-      ...publicFormData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type, checked, files } = e.target;
+    
+    setPublicFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : 
+              type === 'file' ? files[0] : 
+              value
+    }));
   };
 
   const handlePrivateChange = (e) => {
@@ -80,7 +120,7 @@ function CreateEvent() {
   };
 
   const PublicEventForm = () => (
-    <form onSubmit={handlePublicSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
         <label>Event Name</label>
         <input
@@ -105,6 +145,7 @@ function CreateEvent() {
           <option value="business">Business</option>
           <option value="education">Education</option>
           <option value="entertainment">Entertainment</option>
+          <option value="sports">Sports</option>
           <option value="other">Other</option>
         </select>
       </div>
@@ -117,6 +158,7 @@ function CreateEvent() {
             name="date"
             value={publicFormData.date}
             onChange={handlePublicChange}
+            min={new Date().toISOString().split('T')[0]}
             required
           />
         </div>
@@ -139,7 +181,7 @@ function CreateEvent() {
           name="location"
           value={publicFormData.location}
           onChange={handlePublicChange}
-          placeholder="Add a venue or address"
+          placeholder="Event location"
           required
         />
       </div>
@@ -152,22 +194,75 @@ function CreateEvent() {
           onChange={handlePublicChange}
           placeholder="Tell people what your event is about"
           rows="4"
+          required
         />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Maximum Participants</label>
+        <input
+          type="number"
+          name="maxParticipants"
+          value={publicFormData.maxParticipants}
+          onChange={handlePublicChange}
+          min="2"
+          placeholder="Maximum number of participants"
+          required
+        />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Event Rules</label>
+        <textarea
+          name="rules"
+          value={publicFormData.rules}
+          onChange={handlePublicChange}
+          placeholder="Enter event rules and guidelines"
+          rows="3"
+          required
+        />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Banner Image</label>
+        <input
+          type="file"
+          name="bannerImage"
+          onChange={handlePublicChange}
+          accept="image/jpeg,image/png,image/gif"
+        />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label className={styles.checkboxLabel}>
+          <input
+            type="checkbox"
+            name="termsAccepted"
+            checked={publicFormData.termsAccepted}
+            onChange={handlePublicChange}
+            required
+          />
+          I accept the terms and conditions
+        </label>
       </div>
 
       <div className={styles.actions}>
         <button type="button" onClick={() => navigate(-1)} className={styles.cancelButton}>
           Cancel
         </button>
-        <button type="submit" className={styles.createButton}>
-          Create Public Event
+        <button 
+          type="submit" 
+          className={styles.createButton}
+          disabled={isLoading || !publicFormData.termsAccepted}
+        >
+          {isLoading ? 'Creating...' : 'Create Public Event'}
         </button>
       </div>
     </form>
   );
 
   const PrivateEventForm = () => (
-    <form onSubmit={handlePrivateSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
         <label>Event Name</label>
         <input
@@ -250,7 +345,7 @@ function CreateEvent() {
   );
 
   const ChallengeForm = () => (
-    <form onSubmit={handleChallengeSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
         <label>Challenge Title</label>
         <input

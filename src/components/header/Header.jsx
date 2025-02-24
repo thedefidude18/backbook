@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import styles from "./Header.module.css";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import {
@@ -31,6 +31,7 @@ function Header() {
   const usermenu = useRef(null);
   const notificationmenu = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useOnClickOutside(usermenu, showUserMenu, () => {
     setShowUserMenu(false);
@@ -142,6 +143,17 @@ function Header() {
         </Link>
       </div>
       <div className={styles.right}>
+        <button 
+          onClick={() => navigate('/wallet')}
+          className={styles.wallet_button}
+        >
+          <span role="img" aria-label="wallet">💰</span>
+          {new Intl.NumberFormat('en-NG', {
+            style: 'currency',
+            currency: 'NGN',
+            minimumFractionDigits: 2
+          }).format(user?.wallet?.balance || 0)}
+        </button>
         <NavLink
           to="/profile"
           className={({ isActive }) =>

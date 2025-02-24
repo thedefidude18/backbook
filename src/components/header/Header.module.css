@@ -178,6 +178,37 @@
   color: var(--blue-color);
 }
 
+.wallet_button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-third);
+  color: var(--color-primary);
+  padding: 8px 12px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+  height: 36px;
+}
+
+.wallet_button:hover {
+  background: var(--bg-forth);
+}
+
+/* Add this if you're using dark mode */
+:global(.dark) .wallet_button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+:global(.dark) .wallet_button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 @media (max-width: 1100px) {
   .search {
     width: 40px;

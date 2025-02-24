@@ -1,4 +1,3 @@
-import { Plus } from "../../../svg";
 import styles from "./Stories.module.css";
 import Card from "../../UI/Card/Card";
 import { ScrollContainer } from "react-indiana-drag-scroll";
@@ -50,8 +49,12 @@ function Stories() {
               onClick={() => navigate("/create-event")}
             >
               <div className={styles.story_circle}>
-                <div className={styles.plus_icon}>
-                  <Plus color="#fff" />
+                <div className={styles.create_icon}>
+                  <img 
+                    src="/icons/createvent.svg" 
+                    alt="Create Event"
+                    className={styles.create_event_icon}
+                  />
                 </div>
               </div>
             </div>
