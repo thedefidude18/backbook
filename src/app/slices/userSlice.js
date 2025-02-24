@@ -14,8 +14,7 @@ const initialState = {
   theme: (() => {
     try {
       const themeCookie = Cookies.get("theme");
-      return themeCookie ? JSON.parse(themeCookie) : 
-        (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      return themeCookie || (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     } catch {
       return "light";
     }
@@ -103,7 +102,14 @@ export const userSlice = createSlice({
 
     changeTheme: (state, action) => {
       state.theme = action.payload;
-      Cookies.set("theme", JSON.stringify(action.payload));
+      Cookies.set("theme", action.payload);
+      
+      // Apply theme to document
+      if (action.payload === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
     },
   },
 });

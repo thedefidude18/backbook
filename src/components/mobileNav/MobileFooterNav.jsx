@@ -20,7 +20,7 @@ function MobileFooterNav({ user }) {
         
         <Link to="/friends" className={location.pathname === '/friends' ? styles.active : ''}>
           <img 
-            src="/icons/friends.svg" 
+            src="/icons/bet-active.png" 
             alt="Friends"
             className={styles.navIcon}
           />
@@ -39,7 +39,7 @@ function MobileFooterNav({ user }) {
 
         <Link to="/marketplace" className={location.pathname === '/marketplace' ? styles.active : ''}>
           <img 
-            src="/icons/marketplace.svg" 
+            src="/icons/myevents-icon.png" 
             alt="Marketplace"
             className={styles.navIcon}
           />
@@ -47,7 +47,7 @@ function MobileFooterNav({ user }) {
 
         <Link to="/profile" className={location.pathname === '/profile' ? styles.active : ''}>
           <img 
-            src="/icons/profile.svg" 
+            src="/icons/profile.png" 
             alt="Profile"
             className={styles.navIcon}
           />

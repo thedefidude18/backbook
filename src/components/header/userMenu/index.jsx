@@ -59,9 +59,36 @@ export default function UserMenu({ user, setShowUserMenu }) {
             </div>
           </Link>
           <div className={styles.mmenu_splitter}></div>
-          <div className={`${styles.mmenu_main} hover3`}>
+          <Link
+            to="/friends"
+            className={`${styles.mmenu_item} hover3`}
+            onClick={() => setShowUserMenu(false)}
+          >
             <div className={styles.small_circle}>
-              <i className="report_filled_icon"></i>
+              <img 
+                src="/icons/friends.svg" 
+                alt="Friends"
+                width="16"
+                height="16"
+              />
+            </div>
+            <div className={styles.mmenu_col}>
+              <span>Friends</span>
+              {user?.recivedRequestsCount > 0 && (
+                <span className={styles.mmenu_notification}>
+                  {user.recivedRequestsCount} new requests
+                </span>
+              )}
+            </div>
+          </Link>
+          <div className={`${styles.mmenu_item} hover3`}>
+            <div className={styles.small_circle}>
+              <img 
+                src="/icons/feedback.svg" 
+                alt="Feedback"
+                width="16"
+                height="16"
+              />
             </div>
             <div className={styles.mmenu_col}>
               <div className={styles.mmenu_span1}>Give feedback</div>

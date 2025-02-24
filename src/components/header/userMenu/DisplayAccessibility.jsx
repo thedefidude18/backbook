@@ -1,10 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { changeTheme } from "../../../app/slices/userSlice";
 import styles from "./UserMenu.module.css";
+import { useEffect } from "react";
 
 export default function DisplayAccessibility({ setVisible }) {
   const dispatch = useDispatch();
   const theme = useSelector((state) => state.user.theme);
+
+  // Apply theme on component mount and theme change
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const handleThemeChange = (newTheme) => {
+    dispatch(changeTheme(newTheme));
+  };
+
   return (
     <div className={styles.absolute_wrap}>
       <div className={styles.absolute_wrap_header}>
@@ -33,30 +48,30 @@ export default function DisplayAccessibility({ setVisible }) {
       <label
         htmlFor="darkOff"
         className="hover1"
-        onClick={() => {
-          dispatch(changeTheme("light"));
-        }}
+        onClick={() => handleThemeChange("light")}
       >
         <span>Off</span>
-        {theme === "light" ? (
-          <input type="radio" name="dark" id="darkOff" defaultChecked={true} />
-        ) : (
-          <input type="radio" name="dark" id="darkOff" />
-        )}
+        <input
+          type="radio"
+          name="dark"
+          id="darkOff"
+          checked={theme === "light"}
+          onChange={() => {}}
+        />
       </label>
       <label
         htmlFor="darkOn"
         className="hover1"
-        onClick={() => {
-          dispatch(changeTheme("dark"));
-        }}
+        onClick={() => handleThemeChange("dark")}
       >
         <span>On</span>
-        {theme === "light" ? (
-          <input type="radio" name="dark" id="darkOn" />
-        ) : (
-          <input type="radio" name="dark" id="darkOn" defaultChecked={true} />
-        )}
+        <input
+          type="radio"
+          name="dark"
+          id="darkOn"
+          checked={theme === "dark"}
+          onChange={() => {}}
+        />
       </label>
       <div className={styles.mmenu_main}>
         <div className={styles.small_circle} style={{ width: "50px" }}>

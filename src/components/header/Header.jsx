@@ -93,41 +93,36 @@ function Header() {
               : styles.middle_icon
           }
         >
-          <HomeActive className={styles.active_icon} />
-          <Home className={styles.icon} />
-        </NavLink>
-
-        <NavLink
-          to="/friends"
-          className={({ isActive }) =>
-            isActive
-              ? `${styles.active} ${styles.middle_icon}`
-              : styles.middle_icon
-          }
-        >
-          <span
-            style={{ transform: "translateY(5px)" }}
-            className={styles.active_icon}
-          >
-            <FriendsActive />
-          </span>
-          <span
-            style={{ transform: "translateY(5px)" }}
-            className={styles.icon}
-          >
-            <Friends />
-          </span>
-          {user?.recivedRequestsCount > 0 && (
-            <div
-              style={{ transform: "translateY(3px)" }}
-              className={styles.notification}
-            >
-              {user?.recivedRequestsCount}
-            </div>
+          {({ isActive }) => (
+            isActive ? (
+              <img 
+                src="/icons/home-active.svg" 
+                alt="Home"
+                className={styles.active_icon}
+                width="24"
+                height="24"
+              />
+            ) : (
+              <img 
+                src="/icons/home.svg" 
+                alt="Home"
+                className={styles.icon}
+                width="24"
+                height="24"
+              />
+            )
           )}
         </NavLink>
+
         <Link to="/" className={`${styles.middle_icon} hover1`}>
-          <Watch style={{ transform: "translateY(5px)" }} color={color} />
+          <img 
+            src="/icons/watch.svg" 
+            alt="Watch"
+            className={styles.icon}
+            width="24"
+            height="24"
+            style={{ transform: "translateY(5px)" }}
+          />
           <div
             style={{ transform: "translateY(3px)" }}
             className={styles.notification}
@@ -135,11 +130,25 @@ function Header() {
             9+
           </div>
         </Link>
+
         <Link to="/" className={`${styles.middle_icon} hover1`}>
-          <Market color={color} />
+          <img 
+            src="/icons/market.svg" 
+            alt="Marketplace"
+            className={styles.icon}
+            width="24"
+            height="24"
+          />
         </Link>
+
         <Link to="/" className={`${styles.middle_icon} hover1`}>
-          <Gaming color={color} />
+          <img 
+            src="/icons/gaming.svg" 
+            alt="Gaming"
+            className={styles.icon}
+            width="24"
+            height="24"
+          />
         </Link>
       </div>
       <div className={styles.right}>
@@ -175,7 +184,13 @@ function Header() {
               : styles.circle_icon
           }
         >
-          <Messenger className={styles.icon} />
+          <img 
+            src="/icons/chat_icon.png" 
+            alt="Messages"
+            className={styles.icon}
+            width="20"
+            height="20"
+          />
           {user?.unseenMessages > 0 && (
             <div
               style={{
@@ -198,7 +213,13 @@ function Header() {
               setShowNotificationMenu((prev) => !prev);
             }}
           >
-            <Notifications />
+            <img 
+              src="/icons/notifiblue.png" 
+              alt="Notifications"
+              className={styles.icon}
+              width="20"
+              height="20"
+            />
             {user?.unseenNotification > 0 && (
               <div
                 style={{
