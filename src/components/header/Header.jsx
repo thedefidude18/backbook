@@ -96,7 +96,7 @@ function Header() {
           {({ isActive }) => (
             isActive ? (
               <img 
-                src="/icons/home-active.svg" 
+                src="/icons/myevents-icon.png" 
                 alt="Home"
                 className={styles.active_icon}
                 width="24"
@@ -104,7 +104,7 @@ function Header() {
               />
             ) : (
               <img 
-                src="/icons/home.svg" 
+                src="/icons/myevents-icon.png" 
                 alt="Home"
                 className={styles.icon}
                 width="24"
@@ -116,7 +116,7 @@ function Header() {
 
         <Link to="/challenges" className={`${styles.middle_icon} hover1`}>
           <img 
-            src="/icons/watch.svg" 
+            src="/icons/myevents-icon.png" 
             alt="Watch"
             className={styles.icon}
             width="24"
@@ -131,10 +131,10 @@ function Header() {
           </div>
         </Link>
 
-        <Link to="/" className={`${styles.middle_icon} hover1`}>
+        <Link to="/myevents" className={`${styles.middle_icon} hover1`}>
           <img 
-            src="/icons/market.svg" 
-            alt="Marketplace"
+            src="/icons/myevents-icon.png" 
+            alt="My Events"
             className={styles.icon}
             width="24"
             height="24"

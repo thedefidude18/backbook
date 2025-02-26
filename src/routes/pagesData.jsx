@@ -10,6 +10,9 @@ const PostPage = React.lazy(() => import("../pages/post/PostPage"));
 const Messages = React.lazy(() => import("../pages/messages"));
 const Wallet = React.lazy(() => import("../pages/wallet"));
 const Challenges = React.lazy(() => import("../pages/challenges"));
+const Leaderboard = React.lazy(() => import("../pages/leaderboard"));
+const MyEvents = React.lazy(() => import("../pages/events/MyEvents"));
+const EventHistory = React.lazy(() => import("../pages/events/EventHistory"));
 
 const pagesData = [
   {
@@ -60,10 +63,28 @@ const pagesData = [
     title: "profile",
     priv: true,
   },
-    {
+  {
     path: "challenges",
     element: <Challenges />,
     title: "Challenges",
+    priv: true,
+  },
+  {
+    path: "leaderboard",
+    element: <Leaderboard />,
+    title: "Leaderboard",
+    priv: true,
+  },
+  {
+    path: "myevents",
+    element: <MyEvents />,
+    title: "My Events",
+    priv: true,
+  },
+  {
+    path: "events/history",
+    element: <EventHistory />,
+    title: "Event History",
     priv: true,
   },
   {

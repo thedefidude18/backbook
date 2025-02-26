@@ -74,9 +74,10 @@ function Home() {
     }
   }
 
-  const fetchPosts = async ({ pageParam = 1 }) => {
+  // Fetch combined feed of posts and events
+  const fetchCombinedFeed = async ({ pageParam = 1 }) => {
     const { data } = await axiosInstance.get(
-      `/posts/getAllPosts?sort=-createdAt&limit=10&page=${pageParam}`
+      `/posts/getAllPosts?sort=-createdAt&limit=10&page=${pageParam}&includeEvents=true`
     );
     return data;
   };
@@ -91,8 +92,8 @@ function Home() {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ["allPosts"],
-    queryFn: fetchPosts,
+    queryKey: ["combinedFeed"],
+    queryFn: fetchCombinedFeed,
     getNextPageParam: (lastPage, pages) => {
       if (lastPage.length < 10) {
         return undefined;
@@ -167,6 +168,17 @@ function Home() {
     }
   }, [data, error]);
 
+  // Function to render the appropriate component based on item type
+  const renderFeedItem = (item) => {
+    if (item.type === 'event') {
+      // Render event card in the feed
+      return <Post post={item} key={item._id} />;
+    } else {
+      // Render regular post
+      return <Post post={item} key={item._id} />;
+    }
+  };
+
   return (
     <div className={styles.home}>
       <HomeLeft user={user} />
@@ -190,9 +202,9 @@ function Home() {
             data.pages.map &&
             data.pages.map((page, i) => (
               <React.Fragment key={i}>
-                {page.data.map((post) => (
-                  <React.Fragment key={post._id}>
-                    <Post post={post} />
+                {page.data.map((item) => (
+                  <React.Fragment key={item._id}>
+                    {renderFeedItem(item)}
                   </React.Fragment>
                 ))}
               </React.Fragment>

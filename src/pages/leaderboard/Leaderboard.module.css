@@ -1,0 +1,318 @@
+.container {
+  margin-top: 75px;
+  padding: 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--color-primary);
+}
+
+.header {
+  position: relative;
+  padding: 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.headerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backButton {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #f3f4f6;
+}
+
+.backIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #4b5563;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trophyIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #8b5cf6;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #111827, #4b5563);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.timeInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sparklesIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #8b5cf6;
+}
+
+.timeText {
+  color: #8b5cf6;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.filterContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  color: #4b5563;
+}
+
+.filterButton:hover {
+  background-color: #f3f4f6;
+}
+
+.filterButtonActive {
+  background-color: #8b5cf6;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2);
+}
+
+.filterButtonActive:hover {
+  background-color: #7c3aed;
+  box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+}
+
+.leaderboardContainer {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.leaderboardList {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.userRow {
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.userRow:last-child {
+  border-bottom: none;
+}
+
+.userRow:hover {
+  background-color: #f9fafb;
+}
+
+.topRanked:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.avatarContainer {
+  position: relative;
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.avatarDefault {
+  border-color: #e5e7eb;
+}
+
+.avatarGold {
+  border-color: #fbbf24;
+}
+
+.avatarSilver {
+  border-color: #60a5fa;
+}
+
+.avatarBronze {
+  border-color: #fb923c;
+}
+
+.rankBadge {
+  position: absolute;
+  bottom: -0.5rem;
+  left: -0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.rankDefault {
+  background: linear-gradient(to right, #ddd6fe, #ede9fe);
+  color: #7c3aed;
+}
+
+.rankGold {
+  background: linear-gradient(to right, #fef3c7, #fef9c3);
+  color: #b45309;
+}
+
+.rankSilver {
+  background: linear-gradient(to right, #dbeafe, #eff6ff);
+  color: #1d4ed8;
+}
+
+.rankBronze {
+  background: linear-gradient(to right, #ffedd5, #fff7ed);
+  color: #c2410c;
+}
+
+.crownBadge {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+}
+
+.crownIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #fbbf24;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25%);
+  }
+}
+
+.userInfo {
+  margin-left: 1rem;
+  flex: 1;
+}
+
+.userName {
+  font-weight: 600;
+  color: #111827;
+}
+
+.userUsername {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.achievements {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+.achievementStar {
+  width: 1rem;
+  height: 1rem;
+  color: #8b5cf6;
+  fill: #8b5cf6;
+}
+
+.statsContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.statValue {
+  font-weight: 700;
+  color: #111827;
+}
+
+.earningsItem {
+  text-align: right;
+  min-width: 100px;
+}
+
+.earningsValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #111827, #4b5563);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  height: 2rem;
+  width: 2rem;
+  border-top: 2px solid #8b5cf6;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
