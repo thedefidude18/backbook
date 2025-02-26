@@ -8,8 +8,27 @@ import Portal from "./utils/Portal";
 import CreateEvent from "./components/home/events/CreateEvent";
 import SplashScreen from "./components/SplashScreen/SplashScreen.tsx";
 import MobileFooterNav from "./components/mobileNav/MobileFooterNav";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary.jsx";
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        // Don't retry on 404 errors
+        if (error?.response?.status === 404) return false;
+        // Otherwise, retry up to 3 times
+        return failureCount < 3;
+      },
+      onError: (error) => {
+        console.log("Query error:", error.message);
+        // Log the URL that failed
+        if (error.config && error.config.url) {
+          console.log("Failed URL:", error.config.url);
+        }
+      }
+    },
+  },
+});
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -20,16 +39,41 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {showSplash ? (
-        <SplashScreen onComplete={() => setShowSplash(false)} />
-      ) : (
-        <>
-          <Router />
-          <MobileFooterNav user={user} />
-          <Toaster position="top-center" />
-          {isCreatePostOpen && <CreatePostPopup user={user} />}
-        </>
-      )}
+      <ErrorBoundary>
+        {showSplash ? (
+          <SplashScreen onComplete={() => setShowSplash(false)} />
+        ) : (
+          <>
+            <div className={`${theme}`}>
+              <Router />
+              {isCreatePostOpen && <CreatePostPopup user={user} />}
+              <Toaster
+                position="top-center"
+                reverseOrder={false}
+                gutter={10}
+                containerClassName=""
+                containerStyle={{}}
+                toastOptions={{
+                  className: "",
+                  duration: 5000,
+                  style: {
+                    background: "#363636",
+                    color: "#fff",
+                  },
+                  success: {
+                    duration: 3000,
+                    theme: {
+                      primary: "green",
+                      secondary: "black",
+                    },
+                  },
+                }}
+              />
+              <MobileFooterNav />
+            </div>
+          </>
+        )}
+      </ErrorBoundary>
     </QueryClientProvider>
   );
 }

@@ -39,15 +39,15 @@ function Middle({ chatId, soketSlice, user, pView, setOpenInfo, openInfo }) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const fetchMessages = async ({ pageParam = 1 }) => {
-    const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/messages/${chatId}?sort=-createdAt&limit=100&page=${pageParam}`,
-      {
-        withCredentials: true,
-      }
-    );
-    return data;
-  };
+const fetchMessages = async ({ pageParam = 1 }) => {
+  const { data } = await axios.get(
+    `${process.env.REACT_APP_BACKEND_URL}/messages/${chatId}?sort=-createdAt&limit=100&page=${pageParam}`,
+    {
+      withCredentials: true,
+    }
+  );
+  return data;
+};
 
   const {
     isLoading: isGetMessagesLoading,
@@ -385,14 +385,16 @@ function Middle({ chatId, soketSlice, user, pView, setOpenInfo, openInfo }) {
             skl
           )}
         </div>
-        <SendMessage
-          chat={currentChat}
-          chatId={chatId}
-          setIsTyping={setIsTyping}
-          isTyping={isTyping}
-          chatTheme={chatTheme}
-          scrollToBottom={scrollToBottom}
-        />
+        <div className={styles.send_container}>
+          <SendMessage
+            chat={currentChat}
+            chatId={chatId}
+            setIsTyping={setIsTyping}
+            isTyping={isTyping}
+            chatTheme={chatTheme}
+            scrollToBottom={scrollToBottom}
+          />
+        </div>
       </div>
       {openInfo && (
         <Right

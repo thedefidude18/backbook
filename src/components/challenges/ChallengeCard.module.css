@@ -1,0 +1,108 @@
+.card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.badge {
+  display: inline-block;
+  background-color: var(--blue-color);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge.scheduled {
+  background-color: #7C3AED;
+}
+
+.badge.ended {
+  background-color: var(--color-secondary);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--color-primary);
+}
+
+.description {
+  color: var(--color-secondary);
+  font-size: 14px;
+  margin-bottom: 15px;
+  flex-grow: 1;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.dateRange, .participants, .reward {
+  display: flex;
+  justify-content: space-between;
+}
+
+.label {
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.footer {
+  margin-top: auto;
+}
+
+.joinButton, .remindButton, .viewResultsButton {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.joinButton {
+  background-color: var(--blue-color);
+  color: white;
+}
+
+.joinButton:hover {
+  background-color: var(--blue-color-hover);
+}
+
+.remindButton {
+  background-color: #7C3AED;
+  color: white;
+}
+
+.remindButton:hover {
+  background-color: #6D35D3;
+}
+
+.viewResultsButton {
+  background-color: var(--bg-third);
+  color: var(--color-primary);
+}
+
+.viewResultsButton:hover {
+  background-color: var(--bg-forth);
+}

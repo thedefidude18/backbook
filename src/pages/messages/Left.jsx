@@ -36,25 +36,25 @@ function Left({ soketSlice, user, chatId }) {
     }
   };
 
-  const {
-    isLoading: isChatLoading,
-    data: chatsData,
-    isSuccess: isChatSuccess,
-  } = useQuery({
-    queryKey: ["getChats"],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/api/v1/chats?sort=-updatedAt`,
-        {
-          withCredentials: true,
-        }
-      );
-      return data;
-    },
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
-  });
+const {
+  isLoading: isChatLoading,
+  data: chatsData,
+  isSuccess: isChatSuccess,
+} = useQuery({
+  queryKey: ["getChats"],
+  queryFn: async () => {
+    const { data } = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL}/chats?sort=-updatedAt`,
+      {
+        withCredentials: true,
+      }
+    );
+    return data;
+  },
+  refetchOnWindowFocus: false,
+  refetchOnMount: false,
+  staleTime: Infinity,
+});
 
   useOnClickOutside(menuRef, showMenu, () => {
     setShowMenu(false);

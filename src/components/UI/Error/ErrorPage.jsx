@@ -6,6 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 function ErrorPage({ error }) {
   const navigate = useNavigate();
+  
+  // Determine if this is a 404 error
+  const is404 = error?.response?.status === 404 || error?.message?.includes('404');
+  
+  // Get appropriate error message
+  const errorMessage = is404 
+    ? "The resource you're looking for doesn't exist" 
+    : "Something went wrong";
 
   return (
     <div className={classes.main}>
@@ -19,7 +27,8 @@ function ErrorPage({ error }) {
         loop
         play
       />
-      <p>Something Went Wrong</p>
+      <p>{errorMessage}</p>
+      {error && <p className={classes.errorDetails}>{error.message}</p>}
       <div
         className="btn_blue"
         style={{ maxWidth: "300px" }}

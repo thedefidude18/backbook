@@ -11,10 +11,21 @@ const EVENT_TYPES = {
 
 const createEvent = async ({ eventData, type }) => {
   const { data } = await axios.post(
-    `${process.env.REACT_APP_BACKEND_URL}/api/v1/events/create`,
-    { ...eventData, type },
+    `${process.env.REACT_APP_BACKEND_URL}/api/v1/events`,  // Updated endpoint
+    { 
+      ...eventData,
+      type,
+      // Ensure dates are properly formatted
+      date: type === 'challenge' ? undefined : eventData.date,
+      time: type === 'challenge' ? undefined : eventData.time,
+      startDate: type === 'challenge' ? eventData.startDate : undefined,
+      endDate: type === 'challenge' ? eventData.endDate : undefined
+    },
     {
       withCredentials: true,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     }
   );
   return data;
@@ -22,43 +33,11 @@ const createEvent = async ({ eventData, type }) => {
 
 export const useEventCreation = () => {
   return useMutation({
-    mutationKey: "useEventCreation",
+    mutationKey: ["useEventCreation"],
     mutationFn: createEvent,
     onSuccess: (data) => {
-      // Update events cache
-      queryClient.setQueryData(["getEvents"], (oldData) => {
-        if (!oldData) return oldData;
-        
-        let newData = oldData;
-        const newEvent = data.data.event;
-        
-        // Add new event to the list
-        if (newData.pages && newData.pages[0]) {
-          newData.pages[0].data = [newEvent, ...newData.pages[0].data];
-        }
-        
-        return newData;
-      });
-
-      // Update posts cache to show event in feed
-      queryClient.setQueryData(["getPosts"], (oldData) => {
-        if (!oldData) return oldData;
-        
-        let newData = oldData;
-        const eventPost = {
-          ...data.data.event,
-          type: 'event',
-          createdAt: new Date().toISOString(),
-          user: data.data.event.creator // Assuming creator info is included
-        };
-        
-        // Add event post to the feed
-        if (newData.pages && newData.pages[0]) {
-          newData.pages[0].data = [eventPost, ...newData.pages[0].data];
-        }
-        
-        return newData;
-      });
+      // Invalidate and refetch events query
+      queryClient.invalidateQueries(["events"]);
 
       // Handle notifications
       const newNotification = data?.data?.newNotification;

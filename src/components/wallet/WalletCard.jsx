@@ -1,5 +1,5 @@
 import React from 'react';
-import FormLoader from '../UI/FormLoader';
+import FormLoader from '../FormLoader';
 
 const WalletCard = ({ loading, balance, onDeposit, onWithdraw }) => {
   return (

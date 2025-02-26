@@ -114,7 +114,7 @@ function Header() {
           )}
         </NavLink>
 
-        <Link to="/" className={`${styles.middle_icon} hover1`}>
+        <Link to="/challenges" className={`${styles.middle_icon} hover1`}>
           <img 
             src="/icons/watch.svg" 
             alt="Watch"

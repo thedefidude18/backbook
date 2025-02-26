@@ -9,6 +9,7 @@ const FriendsPage = React.lazy(() => import("../pages/friends"));
 const PostPage = React.lazy(() => import("../pages/post/PostPage"));
 const Messages = React.lazy(() => import("../pages/messages"));
 const Wallet = React.lazy(() => import("../pages/wallet"));
+const Challenges = React.lazy(() => import("../pages/challenges"));
 
 const pagesData = [
   {
@@ -57,6 +58,12 @@ const pagesData = [
     path: "/profile/:username",
     element: <Profile />,
     title: "profile",
+    priv: true,
+  },
+    {
+    path: "challenges",
+    element: <Challenges />,
+    title: "Challenges",
     priv: true,
   },
   {

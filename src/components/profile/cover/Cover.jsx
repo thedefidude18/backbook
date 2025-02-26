@@ -26,8 +26,10 @@ function Cover({ isVisitor, user, photosData }) {
   const [height, setHeight] = useState();
 
   useEffect(() => {
-    setWidth(coverRef.current.clientWidth);
-    setHeight(coverRef.current.clientHeight);
+    if (coverRef.current) {
+      setWidth(coverRef.current.clientWidth);
+      setHeight(coverRef.current.clientHeight);
+    }
   }, [window.innerWidth]);
 
   useEffect(() => {
@@ -109,7 +111,9 @@ function Cover({ isVisitor, user, photosData }) {
 
   useEffect(() => {
     if (isSuccess && data?.data?.status === "success") {
-      coverRef.current.style.backgroundImage = `url(${data.data.data.url})`;
+      if (coverRef.current) {
+        coverRef.current.style.backgroundImage = `url(${data.data.data.url})`;
+      }
       dispatch(updateCoverPhoto(data.data.data.url));
       setTimeout(() => {
         setImage(null);
@@ -120,11 +124,18 @@ function Cover({ isVisitor, user, photosData }) {
   useOnClickOutside(CoverMenuRef, showCoverMneu, () => {
     setShowCoverMenu(false);
   });
+  
+  // Check if user is defined before accessing its properties
+  const coverUrl = user?.cover || '';
+  
+  // Check if photosData exists and has profile covers
+  const hasOldCovers = photosData?.data?.profileCovers && photosData.data.profileCovers.length > 0;
+  
   return (
     <div
       className={classes.cover}
       ref={coverRef}
-      style={{ backgroundImage: `${!isLoading ? `url(${user.cover})` : ""}` }}
+      style={{ backgroundImage: coverUrl ? `url(${coverUrl})` : 'none' }}
     >
       {image && (
         <>
@@ -187,13 +198,15 @@ function Cover({ isVisitor, user, photosData }) {
                 className={classes.cover_upload_menu}
                 innerRef={CoverMenuRef}
               >
-                <div
-                  className={`${classes.open_cover_menu_item} hover1`}
-                  onClick={() => setShowOldCover(true)}
-                >
-                  <i className="photo_icon"></i>
-                  Select Photo
-                </div>
+                {hasOldCovers && (
+                  <div
+                    className={`${classes.open_cover_menu_item} hover1`}
+                    onClick={() => setShowOldCover(true)}
+                  >
+                    <i className="photo_icon"></i>
+                    Select Photo
+                  </div>
+                )}
                 <div
                   className={`${classes.open_cover_menu_item} hover1`}
                   onClick={() => refInput.current.click()}
@@ -204,7 +217,7 @@ function Cover({ isVisitor, user, photosData }) {
               </Card>
             )}
           </div>
-          {showOldCover && (
+          {showOldCover && hasOldCovers && (
             <OldCovers
               showOldCover={showOldCover}
               setShowOldCover={setShowOldCover}

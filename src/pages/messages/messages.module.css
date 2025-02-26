@@ -212,48 +212,72 @@
 }
 
 .messages {
-  overflow: auto;
-  padding: 5px;
-  padding-right: 0;
   display: flex;
-  flex-direction: column-reverse;
-  padding-top: 65px;
-  gap: 3px;
-  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  overflow-y: auto;
+  height: calc(var(--app-height) - 120px); /* Adjust height to leave space for header and send area */
+  padding-bottom: 20px;
 }
+
+.send_container {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: 100; /* Higher than content but lower than mobile nav */
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--bg-third);
+  padding-bottom: env(safe-area-inset-bottom, 0); /* For iOS devices with notch */
+}
+
 .send {
   display: flex;
   align-items: center;
-  background: var(--bg-secondary);
+  gap: 10px;
   padding: 10px;
-  gap: 8px;
-
-  position: absolute;
-  width: 100%;
-  bottom: 0;
+  background-color: var(--bg-primary);
+  position: relative;
+  z-index: 101;
 }
+
 .send_message_wrap {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 6px;
-  background: var(--bg-forth);
-  padding: 7px 20px 7px 13px;
-  border-radius: 50px;
-  cursor: text;
-  width: 100%;
-  height: 36px;
+  background-color: var(--bg-third);
+  border-radius: 18px;
+  padding: 0 5px;
+  min-height: 40px;
+  position: relative;
 }
+
 .send_message {
+  flex: 1;
   border: none;
   outline: none;
-  resize: none;
   background: transparent;
   font-size: 15px;
   font-family: inherit;
-  padding-left: 2px;
-  width: 100%;
-  height: 100%;
+  padding: 8px 10px;
+  min-height: 36px;
+  max-height: 100px;
+  resize: none;
+  color: var(--color-primary);
+  z-index: 102;
 }
+
+/* Media query for mobile devices */
+@media (max-width: 767px) {
+  .messages {
+    height: calc(var(--app-height) - 170px); /* Adjust for mobile footer nav */
+  }
+  
+  .send_container {
+    margin-bottom: 60px; /* Space for mobile footer nav */
+  }
+}
+
 .send_message_button {
   position: relative;
   padding: 8px;

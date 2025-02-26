@@ -10,7 +10,7 @@ import ActivateAccount from "../../components/ActivateAccount/ActivateAccount";
 import SendVerification from "../../components/home/SendVerification/SendVerification";
 import { logout, updateNStats } from "../../app/slices/userSlice";
 
-import axios from "axios";
+import axiosInstance from "../../utils/axios";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Post from "../../components/posts/post";
 import { useInView } from "react-intersection-observer";
@@ -32,29 +32,51 @@ function Home() {
 
   async function requestPermission() {
     try {
+      // Check if the browser supports notifications
+      if (!("Notification" in window)) {
+        console.log("This browser does not support desktop notification");
+        return;
+      }
+
+      // Check if service worker is registered and active
+      if (!navigator.serviceWorker.ready) {
+        console.log("Service worker not ready yet");
+        return;
+      }
+
       const permission = await Notification.requestPermission();
       if (permission === "granted") {
-        const token = await getToken(messaging, {
-          vapidKey: "BJSPwo1aXb5un4sORg-jEcznSFs7QmuIhoFTNT6Se8Zje-r69aH5xxJAlFqDM9Y5SA3QJ5-1xiGfYOkADCT4dZs"
-        });
-        
-        if (fcm !== token) {
-          mutate({ fcm: token });
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          
+          // Make sure messaging is properly initialized
+          if (!messaging) {
+            console.log("Firebase messaging not initialized");
+            return;
+          }
+          
+          const token = await getToken(messaging, {
+            vapidKey: "BJSPwo1aXb5un4sORg-jEcznSFs7QmuIhoFTNT6Se8Zje-r69aH5xxJAlFqDM9Y5SA3QJ5-1xiGfYOkADCT4dZs",
+            serviceWorkerRegistration: registration
+          });
+          
+          if (fcm !== token) {
+            mutate({ fcm: token });
+          }
+        } catch (tokenError) {
+          console.log("Error getting token:", tokenError);
         }
       } else if (permission === "denied") {
         console.log("Notification permission denied");
       }
     } catch (error) {
-      console.error("Error requesting notification permission:", error);
+      console.log("Error requesting notification permission:", error);
     }
   }
 
   const fetchPosts = async ({ pageParam = 1 }) => {
-    const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/posts/getAllPosts?sort=-createdAt&limit=10&page=${pageParam}`,
-      {
-        withCredentials: true,
-      }
+    const { data } = await axiosInstance.get(
+      `/posts/getAllPosts?sort=-createdAt&limit=10&page=${pageParam}`
     );
     return data;
   };
@@ -93,12 +115,8 @@ function Home() {
     queryKey: ["ping"],
     queryFn: async () => {
       try {
-        const { data } = await axios.put(
-          `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/ping`,
-          {},
-          {
-            withCredentials: true,
-          }
+        const { data } = await axiosInstance.put(
+          `/users/ping`
         );
         return data;
       } catch (error) {
