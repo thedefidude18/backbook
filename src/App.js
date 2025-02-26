@@ -19,6 +19,10 @@ export const queryClient = new QueryClient({
         // Otherwise, retry up to 3 times
         return failureCount < 3;
       },
+      staleTime: 60000, // Add a default stale time of 1 minute
+      cacheTime: 300000, // Cache data for 5 minutes
+      refetchOnWindowFocus: false, // Don't refetch when window regains focus
+      refetchOnMount: false, // Don't refetch when component mounts
       onError: (error) => {
         console.log("Query error:", error.message);
         // Log the URL that failed

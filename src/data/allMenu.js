@@ -31,6 +31,11 @@ export const menu = [
     description: "Discover and connect with businesses on Facebook.",
   },
   {
+    name: "Referral Program",
+    icon: "referral",
+    description: "Invite friends and earn rewards when they join.",
+  },
+  {
     name: "Gaming Video",
     icon: "gaming",
     description: "Watch and connect with your favorite games and streamers.",

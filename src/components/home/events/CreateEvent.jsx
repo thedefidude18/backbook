@@ -5,6 +5,7 @@ import Card from "../../UI/Card/Card";
 import { Search } from '../../../svg';
 import { useEventCreation, validateEventData } from '../../../hooks/useEventCreation';
 import { toast } from 'react-hot-toast';
+import { fetchRandomBanner } from '../../../utils/testEventCreation';
 
 function CreateEvent() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ function CreateEvent() {
   const [activeTab, setActiveTab] = useState('public');
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
+  const [loadingBanner, setLoadingBanner] = useState(false);
 
   const [challengeFormData, setChallengeFormData] = useState({
     title: '',
@@ -19,7 +21,10 @@ function CreateEvent() {
     startDate: '',
     endDate: '',
     participants: [],
-    reward: ''
+    reward: '',
+    wagerAmount: '',
+    bannerUrl: '',
+    bannerImage: null
   });
 
   const [publicFormData, setPublicFormData] = useState({
@@ -32,6 +37,8 @@ function CreateEvent() {
     maxParticipants: '2',
     rules: '',
     bannerImage: null,
+    bannerUrl: '',
+    wagerAmount: '',
     termsAccepted: false
   });
 
@@ -42,58 +49,96 @@ function CreateEvent() {
     location: '',
     description: '',
     invitees: [],
-    maxAttendees: ''
+    maxAttendees: '',
+    bannerImage: null,
+    bannerUrl: '',
+    wagerAmount: ''
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    let eventData;
-    switch (activeTab) {
-      case 'public':
-        eventData = publicFormData;
-        break;
-      case 'private':
-        eventData = privateFormData;
-        break;
-      case 'challenge':
-        eventData = challengeFormData;
-        break;
-    }
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  let eventData;
+  switch (activeTab) {
+    case 'public':
+      eventData = publicFormData;
+      break;
+    case 'private':
+      eventData = privateFormData;
+      break;
+    case 'challenge':
+      eventData = challengeFormData;
+      break;
+  }
 
-    // Validate the data
-    const { isValid, errors } = validateEventData(eventData, activeTab);
-    
-    if (!isValid) {
-      // Show first error
-      const firstError = Object.values(errors)[0];
-      toast.error(firstError);
-      return;
-    }
+  // Validate the data
+  const { isValid, errors } = validateEventData(eventData, activeTab);
+  
+  if (!isValid) {
+    // Show first error
+    const firstError = Object.values(errors)[0];
+    toast.error(firstError);
+    return;
+  }
 
-    try {
-      await createEvent(
-        { eventData, type: activeTab },
-        {
-          onSuccess: () => {
-            toast.success('Event created successfully!');
-            navigate('/events');
-          },
-          onError: (error) => {
-            toast.error(error.response?.data?.message || 'Failed to create event');
+  try {
+    console.log(`Submitting ${activeTab} event with data:`, eventData);
+    
+    await createEvent(
+      { eventData, type: activeTab },
+      {
+        onSuccess: (data) => {
+          toast.success('Event created successfully!');
+          navigate('/events');
+        },
+        onError: (error) => {
+          console.error('Event creation error:', error);
+          
+          // Try to extract the most useful error message
+          let errorMessage = 'Failed to create event';
+          
+          if (error.response?.data?.message) {
+            // Extract specific validation errors if available
+            const validationMessage = error.response.data.message;
+            if (validationMessage.includes('validation failed')) {
+              // Try to extract specific field errors
+              const fieldErrors = validationMessage.match(/([a-zA-Z]+):\s([^,]+)/g);
+              if (fieldErrors && fieldErrors.length > 0) {
+                // Show the first field error in a more user-friendly way
+                const firstError = fieldErrors[0].split(':');
+                if (firstError.length > 1) {
+                  errorMessage = `${firstError[0].trim()}: ${firstError[1].trim()}`;
+                } else {
+                  errorMessage = fieldErrors[0];
+                }
+              } else {
+                errorMessage = 'Please check all required fields are filled correctly';
+              }
+            } else {
+              errorMessage = validationMessage;
+            }
+          } else if (error.response?.data?.error) {
+            errorMessage = error.response.data.error;
+          } else if (error.message) {
+            errorMessage = error.message;
           }
+          
+          toast.error(errorMessage);
         }
-      );
-    } catch (error) {
-      toast.error('Failed to create event');
-    }
-  };
-
+      }
+    );
+  } catch (error) {
+    console.error('Event submission error:', error);
+    toast.error('Failed to create event. Please try again.');
+  }
+};
   const handleChallengeChange = (e) => {
-    setChallengeFormData({
-      ...challengeFormData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type, files } = e.target;
+    
+    setChallengeFormData(prev => ({
+      ...prev,
+      [name]: type === 'file' ? files[0] : value
+    }));
   };
 
   const handleUserSearch = (e) => {
@@ -113,10 +158,42 @@ function CreateEvent() {
   };
 
   const handlePrivateChange = (e) => {
-    setPrivateFormData({
-      ...privateFormData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value, type, files } = e.target;
+    
+    setPrivateFormData(prev => ({
+      ...prev,
+      [name]: type === 'file' ? files[0] : value
+    }));
+  };
+
+  const generateRandomBanner = async (category, formType) => {
+    setLoadingBanner(true);
+    try {
+      const bannerUrl = await fetchRandomBanner(category || 'event');
+      
+      if (formType === 'public') {
+        setPublicFormData(prev => ({
+          ...prev,
+          bannerUrl
+        }));
+      } else if (formType === 'private') {
+        setPrivateFormData(prev => ({
+          ...prev,
+          bannerUrl
+        }));
+      } else if (formType === 'challenge') {
+        setChallengeFormData(prev => ({
+          ...prev,
+          bannerUrl
+        }));
+      }
+      
+      toast.success('Banner generated successfully!');
+    } catch (error) {
+      toast.error('Failed to generate banner');
+    } finally {
+      setLoadingBanner(false);
+    }
   };
 
   const PublicEventForm = () => (
@@ -212,6 +289,18 @@ function CreateEvent() {
       </div>
 
       <div className={styles.formGroup}>
+        <label>Wager Amount (₦)</label>
+        <input
+          type="number"
+          name="wagerAmount"
+          value={publicFormData.wagerAmount}
+          onChange={handlePublicChange}
+          min="0"
+          placeholder="Entry fee in Naira (optional)"
+        />
+      </div>
+
+      <div className={styles.formGroup}>
         <label>Event Rules</label>
         <textarea
           name="rules"
@@ -225,12 +314,37 @@ function CreateEvent() {
 
       <div className={styles.formGroup}>
         <label>Banner Image</label>
-        <input
-          type="file"
-          name="bannerImage"
-          onChange={handlePublicChange}
-          accept="image/jpeg,image/png,image/gif"
-        />
+        <div className={styles.bannerInputContainer}>
+          <input
+            type="file"
+            name="bannerImage"
+            onChange={handlePublicChange}
+            accept="image/jpeg,image/png,image/gif"
+          />
+          <div className={styles.orDivider}>OR</div>
+          <div className={styles.bannerUrlContainer}>
+            <input
+              type="url"
+              name="bannerUrl"
+              value={publicFormData.bannerUrl}
+              onChange={handlePublicChange}
+              placeholder="Enter banner image URL"
+            />
+            <button 
+              type="button" 
+              className={styles.generateButton}
+              onClick={() => generateRandomBanner(publicFormData.category, 'public')}
+              disabled={loadingBanner}
+            >
+              {loadingBanner ? 'Generating...' : 'Generate Random'}
+            </button>
+          </div>
+        </div>
+        {publicFormData.bannerUrl && (
+          <div className={styles.bannerPreview}>
+            <img src={publicFormData.bannerUrl} alt="Banner preview" />
+          </div>
+        )}
       </div>
 
       <div className={styles.formGroup}>
@@ -323,6 +437,18 @@ function CreateEvent() {
       </div>
 
       <div className={styles.formGroup}>
+        <label>Wager Amount (₦)</label>
+        <input
+          type="number"
+          name="wagerAmount"
+          value={privateFormData.wagerAmount}
+          onChange={handlePrivateChange}
+          min="0"
+          placeholder="Entry fee in Naira (optional)"
+        />
+      </div>
+
+      <div className={styles.formGroup}>
         <label>Description</label>
         <textarea
           name="description"
@@ -331,6 +457,41 @@ function CreateEvent() {
           placeholder="Tell your invited guests what this event is about"
           rows="4"
         />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Banner Image</label>
+        <div className={styles.bannerInputContainer}>
+          <input
+            type="file"
+            name="bannerImage"
+            onChange={handlePrivateChange}
+            accept="image/jpeg,image/png,image/gif"
+          />
+          <div className={styles.orDivider}>OR</div>
+          <div className={styles.bannerUrlContainer}>
+            <input
+              type="url"
+              name="bannerUrl"
+              value={privateFormData.bannerUrl}
+              onChange={handlePrivateChange}
+              placeholder="Enter banner image URL"
+            />
+            <button 
+              type="button" 
+              className={styles.generateButton}
+              onClick={() => generateRandomBanner('private', 'private')}
+              disabled={loadingBanner}
+            >
+              {loadingBanner ? 'Generating...' : 'Generate Random'}
+            </button>
+          </div>
+        </div>
+        {privateFormData.bannerUrl && (
+          <div className={styles.bannerPreview}>
+            <img src={privateFormData.bannerUrl} alt="Banner preview" />
+          </div>
+        )}
       </div>
 
       <div className={styles.actions}>
@@ -394,6 +555,18 @@ function CreateEvent() {
       </div>
 
       <div className={styles.formGroup}>
+        <label>Wager Amount (₦)</label>
+        <input
+          type="number"
+          name="wagerAmount"
+          value={challengeFormData.wagerAmount}
+          onChange={handleChallengeChange}
+          min="0"
+          placeholder="Entry fee in Naira"
+        />
+      </div>
+
+      <div className={styles.formGroup}>
         <label>Reward</label>
         <input
           type="text"
@@ -402,6 +575,41 @@ function CreateEvent() {
           onChange={handleChallengeChange}
           placeholder="What will the winner receive?"
         />
+      </div>
+
+      <div className={styles.formGroup}>
+        <label>Banner Image</label>
+        <div className={styles.bannerInputContainer}>
+          <input
+            type="file"
+            name="bannerImage"
+            onChange={handleChallengeChange}
+            accept="image/jpeg,image/png,image/gif"
+          />
+          <div className={styles.orDivider}>OR</div>
+          <div className={styles.bannerUrlContainer}>
+            <input
+              type="url"
+              name="bannerUrl"
+              value={challengeFormData.bannerUrl}
+              onChange={handleChallengeChange}
+              placeholder="Enter banner image URL"
+            />
+            <button 
+              type="button" 
+              className={styles.generateButton}
+              onClick={() => generateRandomBanner('challenge', 'challenge')}
+              disabled={loadingBanner}
+            >
+              {loadingBanner ? 'Generating...' : 'Generate Random'}
+            </button>
+          </div>
+        </div>
+        {challengeFormData.bannerUrl && (
+          <div className={styles.bannerPreview}>
+            <img src={challengeFormData.bannerUrl} alt="Banner preview" />
+          </div>
+        )}
       </div>
 
       <div className={styles.formGroup}>

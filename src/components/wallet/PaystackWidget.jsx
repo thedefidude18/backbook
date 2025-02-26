@@ -1,6 +1,33 @@
 import React from 'react';
+import { usePaystackPayment } from '../../hooks/usePaystackPayment';
+import { FlutterwavePaymentButton } from '../../hooks/useFlutterwavePayment';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function PaystackWidget({ amount, onSuccess, onClose, type }) {
+function PaystackWidget({ amount, onSuccess, onClose, type, paymentMethod = 'paystack' }) {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.userinfo);
+  
+  const { mutate: initiatePaystack, isLoading: paystackLoading } = usePaystackPayment();
+  
+  const handlePaystackPayment = () => {
+    initiatePaystack(
+      { amount, email: user.email },
+      {
+        onSuccess: (data) => {
+          // Redirect happens in the hook
+        }
+      }
+    );
+  };
+
+  const handleFlutterwaveSuccess = (response) => {
+    toast.success('Payment successful!');
+    onSuccess && onSuccess(response);
+    navigate('/wallet');
+  };
+  
   if (!amount || amount < 100) {
     return (
       <button 
@@ -13,15 +40,23 @@ function PaystackWidget({ amount, onSuccess, onClose, type }) {
   }
 
   return (
-    <button 
-      onClick={() => {
-        // Implement Paystack integration here
-        console.log('Processing payment:', { amount, type });
-      }}
-      className="w-full bg-[#CCFF00] text-black py-3 rounded-lg hover:bg-[#CCFF00]/90 transition-colors font-medium"
-    >
-      {type === 'fiat' ? 'Deposit' : 'Buy Coins'} ₦{amount.toLocaleString()}
-    </button>
+    <div className="space-y-4">
+      {paymentMethod === 'paystack' ? (
+        <button
+          onClick={handlePaystackPayment}
+          disabled={paystackLoading}
+          className="w-full bg-[#CCFF00] text-black py-3 rounded-lg hover:bg-[#CCFF00]/90 transition-colors"
+        >
+          {paystackLoading ? "Processing..." : "Pay with Paystack"}
+        </button>
+      ) : (
+        <FlutterwavePaymentButton 
+          amount={amount} 
+          email={user.email} 
+          onSuccess={handleFlutterwaveSuccess} 
+        />
+      )}
+    </div>
   );
 }
 

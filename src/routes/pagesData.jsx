@@ -13,6 +13,7 @@ const Challenges = React.lazy(() => import("../pages/challenges"));
 const Leaderboard = React.lazy(() => import("../pages/leaderboard"));
 const MyEvents = React.lazy(() => import("../pages/events/MyEvents"));
 const EventHistory = React.lazy(() => import("../pages/events/EventHistory"));
+const Referral = React.lazy(() => import("../pages/referrals")); // Changed from "../pages/referral" to "../pages/referrals"
 
 const pagesData = [
   {
@@ -115,6 +116,12 @@ const pagesData = [
     path: "wallet",
     element: <Wallet />,
     title: "wallet",
+    priv: true,
+  },
+  {
+    path: "referral",
+    element: <Referral />,
+    title: "Referral Program",
     priv: true,
   },
 ];

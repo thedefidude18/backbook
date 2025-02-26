@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import classes from "./style.module.css";
 import { useParams } from "react-router-dom";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axiosInstance from "../../utils/axios";
 import { useSelector } from "react-redux";
 import ProfileMenu from "./ProfileMenu";
 import Post from "../../components/posts/post";
@@ -38,31 +38,22 @@ function Profile() {
   const isVisitor = !(usernameID === user.username);
 
   const fetchProfile = async () => {
-    const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/getProfile/${usernameID}?sort=-createdAt&limit=10`,
-      {
-        withCredentials: true,
-      }
+    const { data } = await axiosInstance.get(
+      `/users/getProfile/${usernameID}?sort=-createdAt&limit=10`
     );
     return data;
   };
 
   const fetchPhotos = async () => {
-    const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/getProfile/${usernameID}/photos`,
-      {
-        withCredentials: true,
-      }
+    const { data } = await axiosInstance.get(
+      `/users/getProfile/${usernameID}/photos`
     );
     return data;
   };
 
   const fetchPosts = async ({ pageParam = 1 }) => {
-    const { data } = await axios.get(
-      `${process.env.REACT_APP_BACKEND_URL}/api/v1/users/getProfile/${usernameID}/posts?sort=-createdAt&limit=10&page=${pageParam}`,
-      {
-        withCredentials: true,
-      }
+    const { data } = await axiosInstance.get(
+      `/users/getProfile/${usernameID}/posts?sort=-createdAt&limit=10&page=${pageParam}`
     );
     return data;
   };

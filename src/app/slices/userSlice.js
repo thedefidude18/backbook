@@ -46,6 +46,13 @@ export const userSlice = createSlice({
       ] = `Bearer ${action.payload.data.token}`;
     },
 
+    updateUserInfo: (state, action) => {
+      state.userinfo = action.payload;
+      Cookies.set("user", JSON.stringify(action.payload), {
+        expires: 90,
+      });
+    },
+
     updateProfilePhoto: (state, action) => {
       state.userinfo.photo = action.payload;
       Cookies.set("user", JSON.stringify(state.userinfo), {
@@ -121,6 +128,7 @@ export const {
   changeTheme,
   updateNStats,
   reciveNoti,
+  updateUserInfo,
 } = userSlice.actions;
 
 export default userSlice.reducer;
